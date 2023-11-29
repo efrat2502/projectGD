@@ -5,7 +5,6 @@ import Folder from "./components/Folder";
 import File from "./components/File";
 
 function App() {
-  const user = { name: efrat };
   return (
     <>
       <BrowserRouter>
