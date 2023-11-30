@@ -22,7 +22,7 @@ const MyDrive = ({ user }) => {
       const requestOptions = {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify("hi"),
+        body: JSON.stringify({ body: "hi" }),
       };
       console.log("requestOptions: ", requestOptions);
       const response = await fetch(
