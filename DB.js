@@ -9,3 +9,8 @@ const users = [
   },
 ];
 module.exports = users;
+
+const getUserNameById = (id) => {
+  return users.filter((user) => user.id === id);
+};
+module.exports = getUserNameById;

@@ -4,57 +4,28 @@ const getFile = require("../functions/getFile");
 const fs = require("fs");
 const path = require("path");
 const showContent = require("../functions/showContent");
+const rename = require("../functions/rename");
 const { deleteDirectory, deleteFile } = require("../functions/delete");
-// const fileRoutes = require("./file");
+const legalId = require("../functions/idHendeler");
+const fileRoutes = require("./file");
 
-router.get("/:id/:fName", function (req, res, next) {
-  const fName = req.params.fName;
-  console.log("req.params: ", req.params);
-  const userId = req.params.id;
-  console.log("userId: ", userId);
-  const url = path.join(__dirname, "../public", `/efrat/${fName}`);
+router.delete("*", function (req, res, next) {
+  const id = req.baseUrl.split("/")[2];
+  console.log("id: ", id);
+
+  const currUser = legalId(id);
+  console.log("currUser: ", currUser);
+  if (!currUser[0]) {
+    res.status(400).send("Invalid user ID");
+    return;
+  }
+
+  const url = path.join(__dirname, "../public", currUser[0].name, req.url);
+  console.log("url: ", url);
+
   fs.stat(url, (err, stats) => {
     if (err) {
       console.error(err);
-      // Handle the error, e.g., file not found
-      return;
-    }
-
-    if (stats.isFile()) {
-      console.log("It is a file.");
-      getFile(url, res);
-    } else if (stats.isDirectory()) {
-      showContent(url, res);
-      console.log("It is a directory.");
-    } else {
-      console.log("It is neither a file nor a directory.");
-    }
-  });
-});
-router.patch("/:fName", (req, res) => {
-  const { fName } = req.params;
-  const body = req.body;
-  // console.log("req: ", req);
-  console.log("body: ", req.body);
-  res.send(JSON.stringify(req.body));
-  // Users.updateUser(username, userPatch, () => {
-  //   Users.lookupUser({ username }, (err, user) => {
-  //     if (err) return req.status(500).json({ error: err });
-  //     services.updateUserServices(user);
-  //     res.send();
-  //   });
-  // });
-});
-
-// router.use("/:fName", fileRoutes);
-
-router.delete("/:id/:fName", function (req, res, next) {
-  const fName = req.params.fName;
-  const url = path.join(__dirname, "../public", `/efrat/${fName}`);
-  fs.stat(url, (err, stats) => {
-    if (err) {
-      console.error(err);
-      // Handle the error, e.g., file not found
       return;
     }
 
@@ -70,22 +41,53 @@ router.delete("/:id/:fName", function (req, res, next) {
   });
 });
 
-router.put("/:id/:fName", (req, res) => {
-  console.log("req: ", req);
-  const { fName } = req.params;
-  console.log("fName: ", fName);
-  const body = req.body;
-  console.log("body: ", body);
-  // console.log("req: ", req);
-  console.log("body: ", req.body);
-  res.send(JSON.stringify(req.body));
-  // Users.updateUser(username, userPatch, () => {
-  //   Users.lookupUser({ username }, (err, user) => {
-  //     if (err) return req.status(500).json({ error: err });
-  //     services.updateUserServices(user);
-  //     res.send();
-  //   });
-  // });
+router.put("*", (req, res) => {
+  const id = req.baseUrl.split("/")[2];
+  console.log("id: ", id);
+
+  const currUser = legalId(id);
+  console.log("currUser: ", currUser);
+  if (!currUser[0]) {
+    res.status(400).send("Invalid user ID");
+    return;
+  }
+
+  const url = path.join(__dirname, "../public", currUser[0].name, req.url);
+  console.log("url: ", url);
+  rename(url, req.body.name, res);
+});
+
+router.get("*", function (req, res, next) {
+  const id = req.baseUrl.split("/")[2];
+  console.log("id: ", id);
+
+  const currUser = legalId(id);
+  console.log("currUser: ", currUser);
+  if (!currUser[0]) {
+    res.status(400).send("Invalid user ID");
+    return;
+  }
+
+  const url = path.join(__dirname, "../public", currUser[0].name, req.url);
+  console.log("url: ", url);
+
+  fs.stat(url, (err, stats) => {
+    if (err) {
+      console.error(err);
+      // Handle the error, e.g., file not found
+      res.sendStatus(500);
+    }
+
+    if (stats.isFile()) {
+      console.log("It is a file.");
+      getFile(url, res);
+    } else if (stats.isDirectory()) {
+      showContent(url, res);
+      console.log("It is a directory.");
+    } else {
+      console.log("It is neither a file nor a directory.");
+    }
+  });
 });
 
 module.exports = router;
