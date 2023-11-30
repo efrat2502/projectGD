@@ -8,12 +8,14 @@ const path = require("path");
 router.get("/:id", function (req, res, next) {
   const userId = req.params.id;
   const currUser = users.filter((user) => userId == user.id);
-  const url = path.join(__dirname, "../userFiles/efrat");
+  const url = path.join(__dirname, "../public/efrat");
+  console.log("ccccc");
   // showContent("/efrat", res);
   showContent(url, res);
 
   // res.send(JSON.stringify(currUser));
 });
-// router.use("/:id", fileRoutes);
+
+router.use("/", fileRoutes);
 
 module.exports = router;

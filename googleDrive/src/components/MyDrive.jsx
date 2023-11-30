@@ -20,9 +20,9 @@ const MyDrive = ({ user }) => {
   async function renameFile() {
     try {
       const requestOptions = {
-        method: "PATCH",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: "newFolder" }),
+        body: JSON.stringify("hi"),
       };
       console.log("requestOptions: ", requestOptions);
       const response = await fetch(
