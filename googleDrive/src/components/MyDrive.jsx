@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import File from "./File";
 
 const MyDrive = ({ user }) => {
   const [data, setData] = useState([]);
-  const [file, setFile] = useState("");
-  const [clickedRename, setClickedRename] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [submittedEdit, setSubmittedEdit] = useState(false);
-
+  const [file, setFile] = useState({});
+  const navigate = useNavigate();
   //fetch get
   async function getFolders(url) {
     try {
@@ -27,7 +25,7 @@ const MyDrive = ({ user }) => {
     getFolders(`http://localhost:3001/users/${user.id}`);
   }, []);
 
-  async function getFile(url) {
+  async function getFile(url, itemName) {
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -35,53 +33,13 @@ const MyDrive = ({ user }) => {
       }
       const userFile = await response.json();
       console.log("userFile: ", userFile);
-      setFile(userFile);
+      setFile({ name: itemName, content: userFile });
+      // navigate("/myDrive/file");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
 
-  async function renameFile() {
-    try {
-      const requestOptions = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: "hi" }),
-      };
-      console.log("requestOptions: ", requestOptions);
-      const response = await fetch(
-        "http://localhost:3001/users/1/folder1",
-        requestOptions
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log("Data:", data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
-  // renameFile();
-
-  // async function handleDelete(fname) {
-  //   console.log("entered");
-  //   try {
-  //     const response = await fetch(`http://localhost:3001/users/1/${fname}`, {
-  //       method: "DELETE",
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! Status: ${response.status}`);
-  //     }
-  //     setFile((prev) => {
-  //       const copyFiles= ...prev
-  //       const filtered = copyFiles.filter((file) => file.name !== fname);
-  //       return filtered;
-  //     });
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // }
   async function handleDelete(fname) {
     console.log("entered");
     try {
@@ -108,18 +66,12 @@ const MyDrive = ({ user }) => {
       console.error("Error fetching data:", error);
     }
   }
-  const handleChange = (event) => {
-    setInputValue(event.target.value);
-  };
-  const handleSubmitEdit = () => {
-    setSubmittedEdit((prev) => !prev);
-    setClickedEdit((prev) => !prev);
-    editPost();
-  };
-  if (file != "") {
+
+  if (JSON.stringify(file) !== "{}") {
+    console.log("file: ", file);
     return (
       <>
-        <p>{file}</p>
+        <File file={file} userId={user.id} />
       </>
     );
   } else {
@@ -128,18 +80,19 @@ const MyDrive = ({ user }) => {
         <h1>myDrive</h1>
         {/* {data.length > 0 ? data : <h2>loading...</h2>} */}
         {data.length > 0 ? (
-          data.map((f) => (
-            <div key={f.name}>
-              {f.isDir ? (
+          data.map((item) => (
+            <div key={item.name}>
+              {item.isDir ? (
                 <>
                   <button
                     onClick={() =>
                       getFolders(
-                        `http://localhost:3001/users/${user.id}/${f.name}`
+                        `http://localhost:3001/users/${user.id}/${item.name}`,
+                        item
                       )
                     }
                   >
-                    {f.name}📁
+                    {item.name}📁
                   </button>
                 </>
               ) : (
@@ -147,28 +100,18 @@ const MyDrive = ({ user }) => {
                   <button
                     onClick={() =>
                       getFile(
-                        `http://localhost:3001/users/${user.id}/${f.name}`
+                        `http://localhost:3001/users/${user.id}/${item.name}`,
+                        item.name
                       )
                     }
                   >
-                    {f.name}📝
+                    {item.name}📝
                   </button>
                 </>
               )}
-              <button onClick={() => handleDelete(f.name)}>🗑️</button>
-              {/* <button onClick={() => handleRename(f.name)}>✏️</button> */}
-              {/* <button onClick={() => setClickedRename((prev) => !prev)}>
-                ✏️
-              </button> */}
-              {/* <>
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={handleChange}
-                  style={{ width: "10vw", height: "10vh" }}
-                />
-                <br />
-              </> */}
+              <button onClick={() => handleDelete(item.name)}>🗑️</button>
+              {/* <button onClick={() => handleRename(item.name)}>✏️</button> */}
+
               {/* {clickedRename ? (
               ) : null} */}
               <br />

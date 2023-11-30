@@ -13,7 +13,7 @@ const rename = (url, newName, res) => {
     }
 
     console.log(`Renamed to: ${newPath}`);
-    res.send("Renamed successfully");
+    res.send("hi");
   });
 };
 
