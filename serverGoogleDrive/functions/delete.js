@@ -22,7 +22,7 @@ const deleteFile = (url, res) => {
       return;
     }
     console.log(`${url} is deleted!`);
-    res.send("File deleted successfully");
+    res.status(204).send("file deleted successfully");
   });
 };
 module.exports = { deleteDirectory: deleteDirectory, deleteFile: deleteFile };

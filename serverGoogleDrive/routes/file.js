@@ -46,5 +46,31 @@ router.put("/:id/:fName", (req, res) => {
   //   });
   // });
 });
+router.delete("/:id/:fName", function (req, res, next) {
+  // const currUser = legalId(req.params.id);
+  // console.log("currUser: ", currUser);
+  // if (!currUser[0]) {
+  //   res.status(400).send("Invalid user ID");
+  //   return;
+  // }
+  const fName = req.params.fName;
+  const url = path.join(__dirname, `../public/efrat/${fName}`);
 
+  fs.stat(url, (err, stats) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+
+    if (stats.isFile()) {
+      console.log("It is a file.");
+      deleteFile(url, res);
+    } else if (stats.isDirectory()) {
+      console.log("It is a directory.");
+      deleteDirectory(url, res);
+    } else {
+      console.log("It is neither a file nor a directory.");
+    }
+  });
+});
 module.exports = router;
