@@ -17,6 +17,29 @@ const MyDrive = ({ user }) => {
   }
 
   getFolders();
+  async function renameFile() {
+    try {
+      const requestOptions = {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "newFolder" }),
+      };
+      console.log("requestOptions: ", requestOptions);
+      const response = await fetch(
+        "http://localhost:3001/users/1/folder1",
+        requestOptions
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Data:", data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  renameFile();
   return (
     <div>
       myDrive
