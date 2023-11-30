@@ -31,6 +31,20 @@ router.get("/:id/:fName", function (req, res, next) {
     }
   });
 });
+router.patch("/:fName", (req, res) => {
+  const { fName } = req.params;
+  const body = req.body;
+  // console.log("req: ", req);
+  console.log("body: ", req.body);
+  res.send(JSON.stringify(req.body));
+  // Users.updateUser(username, userPatch, () => {
+  //   Users.lookupUser({ username }, (err, user) => {
+  //     if (err) return req.status(500).json({ error: err });
+  //     services.updateUserServices(user);
+  //     res.send();
+  //   });
+  // });
+});
 
 // router.use("/:fName", fileRoutes);
 

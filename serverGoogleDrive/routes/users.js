@@ -2,10 +2,8 @@ const express = require("express");
 const router = express.Router();
 const users = require("../../DB");
 const showContent = require("../functions/showContent");
-const fileRoutes = require("./file");
+// const fileRoutes = require("./file");
 const path = require("path");
-
-console.log("a: ", users);
 
 router.get("/:id", function (req, res, next) {
   const userId = req.params.id;
