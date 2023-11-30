@@ -18,19 +18,6 @@ router.get("/:id", function (req, res, next) {
   // res.send(JSON.stringify(currUser));
 });
 
-router.put("/:id", function (req, res, next) {
-  console.log("req.body: ", req.body);
-
-  const userId = req.params.id;
-  const currUser = users.filter((user) => userId == user.id);
-  const url = path.join(__dirname, "../public/efrat");
-  console.log("ccccc");
-  // showContent("/efrat", res);
-  showContent(url, res);
-
-  // res.send(JSON.stringify(currUser));
-});
-
 router.use("/", fileRoutes);
 
 module.exports = router;
